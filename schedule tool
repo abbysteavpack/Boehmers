@@ -1,0 +1,624 @@
+import React, { useState } from "react";
+
+ 
+
+const Card = ({ children }) => (
+
+  <div
+
+    style={{
+
+      border: "1px solid #ccc",
+
+      padding: "12px",
+
+      borderRadius: "8px",
+
+      marginBottom: "12px",
+
+    }}
+
+  >
+
+    {children}
+
+  </div>
+
+);
+
+ 
+
+const Button = (props) => <button style={{ margin: "6px" }} {...props} />;
+
+const Input = (props) => <input style={{ margin: "6px" }} {...props} />;
+
+ 
+
+const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+ 
+
+const shiftTemplates = {
+
+  Mon: ["B1 Open (3-8)", "B1 PM (8-Close)"],
+
+  Tue: [
+
+    "B1 Open (3-8)",
+
+    "B1 PM (8-Close)",
+
+    "Bags (5-10)",
+
+    "B2 AM (11-4)",
+
+    "B2 MID (4-8)",
+
+    "B2 PM (8-Close)",
+
+  ],
+
+  Wed: [
+
+    "B1 Open (3-8)",
+
+    "B1 PM (8-Close)",
+
+    "B2 AM (11-4)",
+
+    "B2 MID (4-8)",
+
+    "B2 PM (8-Close)",
+
+  ],
+
+  Thu: [
+
+    "B1 Open (3-8)",
+
+    "B1 PM (8-Close)",
+
+    "B2 AM (11-4)",
+
+    "B2 MID (4-8)",
+
+    "B2 PM (8-Close)",
+
+  ],
+
+  Fri: [
+
+    "B1 Open (2-8)",
+
+    "B1 MID (8-12)",
+
+    "B1 PM (9-Close)",
+
+    "B2 AM (11-4)",
+
+    "B2 MID (4-8)",
+
+    "B2 PM (8-Close)",
+
+  ],
+
+  Sat: [
+
+    "B1 Open (12-4)",
+
+    "B1 MID (4-9)",
+
+    "B1 PM (9-12)",
+
+    "B2 AM (11-4)",
+
+    "B2 MID (4-8)",
+
+    "B2 PM (8-Close)",
+
+  ],
+
+  Sun: ["B2 AM (11-6)", "B2 PM (6-Close)", "B1 AM (12-5)", "B1 PM (5-Close)"],
+
+};
+
+ 
+
+export default function App() {
+
+  // ✅ ADD YOUR EMPLOYEES HERE
+
+  const [employees, setEmployees] = useState([
+
+    { name: "Just Abby", availability: [], assigned: 0 },
+
+    { name: "Mandie", availability: [], assigned: 0 },
+
+    { name: "Alyssa", availability: [], assigned: 0 },
+
+    { name: "Kelsey", availability: [], assigned: 0 },
+
+    { name: "Lish", availability: [], assigned: 0 },
+
+    { name: "Amanda", availability: [], assigned: 0 },
+
+    { name: "Kelly", availability: [], assigned: 0 },
+
+    { name: "Abby S", availability: [], assigned: 0 },
+
+    { name: "Sharon", availability: [], assigned: 0 },
+
+    { name: "Victoria", availability: [], assigned: 0 },
+
+    { name: "Lexi", availability: [], assigned: 0 },
+
+    { name: "Eric", availability: [], assigned: 0 },
+
+    { name: "Angela", availability: [], assigned: 0 },
+
+    { name: "Autem", availability: [], assigned: 0 },
+
+    { name: "Holly", availability: [], assigned: 0 },
+
+    { name: "Jennie", availability: [], assigned: 0 },
+
+    { name: "Kendra", availability: [], assigned: 0 },
+
+    { name: "Maddie", availability: [], assigned: 0 },
+
+    { name: "Michelle Stefens", availability: [], assigned: 0 },
+
+    { name: "Paula", availability: [], assigned: 0 },
+
+    { name: "Sheena", availability: [], assigned: 0 },
+
+    { name: "AmySue", availability: [], assigned: 0 },
+
+    { name: "Lissa", availability: [], assigned: 0 },
+
+    { name: "Kalah", availability: [], assigned: 0 },
+
+    { name: "Olivia", availability: [], assigned: 0 },
+
+    { name: "Kailey", availability: [], assigned: 0 },
+
+    { name: "Lydia", availability: [], assigned: 0 },
+
+    { name: "Michelle C", availability: [], assigned: 0 },
+
+    { name: "Taylor", availability: [], assigned: 0 },
+
+  ]);
+
+ 
+
+  const [schedule, setSchedule] = useState([]);
+
+  const [month, setMonth] = useState(6);
+
+  const [year, setYear] = useState(2026);
+
+  ``;
+
+ 
+
+  const [selectedEmployee, setSelectedEmployee] = useState("");
+
+  const [selectedDate, setSelectedDate] = useState("");
+
+  const [selectedShift, setSelectedShift] = useState("");
+
+ 
+
+  // ✅ Get shifts based on selected date
+
+  const getShiftsForDate = () => {
+
+    if (!selectedDate) return [];
+
+ 
+
+    const [year, month, day] = selectedDate.split("-");
+
+ 
+
+    const date = new Date(Number(year), Number(month) - 1, Number(day));
+
+ 
+
+    const dow = daysOfWeek[date.getDay()];
+
+ 
+
+    return shiftTemplates[dow] || [];
+
+  };
+
+  ``;
+
+ 
+
+  // ✅ Generate monthly shifts
+
+  const generateMonthlyShifts = () => {
+
+    let result = [];
+
+    const daysInMonth = new Date(year, month, 0).getDate();
+
+ 
+
+    for (let d = 1; d <= daysInMonth; d++) {
+
+      const date = new Date(year, month - 1, d);
+
+      const dow = daysOfWeek[date.getDay()];
+
+ 
+
+      const yyyy = date.getFullYear();
+
+      const mm = String(date.getMonth() + 1).padStart(2, "0");
+
+      const dd = String(date.getDate()).padStart(2, "0");
+
+      const dateStr = `${yyyy}-${mm}-${dd}`;
+
+ 
+
+      (shiftTemplates[dow] || []).forEach((shift) => {
+
+        result.push(`${dateStr} ${shift}`);
+
+      });
+
+    }
+
+ 
+
+    return result;
+
+  };
+
+ 
+
+  const isBackToBack = (emp, shift, current) => {
+
+    const [date] = shift.split(" ");
+
+    return current.some(
+
+      (s) => s.employee === emp.name && s.shift.startsWith(date)
+
+    );
+
+  };
+
+ 
+
+  const generateSchedule = () => {
+
+    const shifts = generateMonthlyShifts();
+
+    let newSchedule = [];
+
+    let empCopy = employees.map((e) => ({ ...e }));
+
+ 
+
+    shifts.forEach((shift) => {
+
+      const available = empCopy
+
+        .filter(
+
+          (e) =>
+
+            e.availability.includes(shift) &&
+
+            !isBackToBack(e, shift, newSchedule)
+
+        )
+
+        .sort((a, b) => a.assigned - b.assigned);
+
+ 
+
+      if (available.length) {
+
+        available[0].assigned++;
+
+        newSchedule.push({ shift, employee: available[0].name });
+
+      } else {
+
+        newSchedule.push({ shift, employee: "Unassigned" });
+
+      }
+
+    });
+
+ 
+
+    setSchedule(newSchedule);
+
+  };
+
+ 
+
+  // ✅ Add availability
+
+  const addAvailability = () => {
+
+    if (!selectedEmployee || !selectedDate || !selectedShift) return;
+
+ 
+
+    const formatted = `${selectedDate} ${selectedShift}`;
+
+ 
+
+    setEmployees((prev) =>
+
+      prev.map((emp) =>
+
+        emp.name === selectedEmployee
+
+          ? {
+
+              ...emp,
+
+              availability: [...emp.availability, formatted],
+
+            }
+
+          : emp
+
+      )
+
+    );
+
+  };
+
+ 
+
+  // ✅ Calendar
+
+  const buildCalendar = () => {
+
+    const firstDay = new Date(year, month - 1, 1).getDay();
+
+    const daysInMonth = new Date(year, month, 0).getDate();
+
+ 
+
+    let cells = [];
+
+ 
+
+    for (let i = 0; i < firstDay; i++) cells.push(null);
+
+ 
+
+    for (let d = 1; d <= daysInMonth; d++) {
+
+      const tempDate = new Date(year, month - 1, d);
+
+      const yyyy = tempDate.getFullYear();
+
+      const mm = String(tempDate.getMonth() + 1).padStart(2, "0");
+
+      const dd = String(tempDate.getDate()).padStart(2, "0");
+
+      const dateStr = `${yyyy}-${mm}-${dd}`;
+
+ 
+
+      const dayShifts = schedule.filter((s) => s.shift.startsWith(dateStr));
+
+ 
+
+      cells.push({ day: d, shifts: dayShifts });
+
+    }
+
+ 
+
+    return cells;
+
+  };
+
+ 
+
+  const calendar = buildCalendar();
+
+ 
+
+  return (
+
+    <div style={{ padding: 20 }}>
+
+      <Card>
+
+        <h3>Select Month</h3>
+
+ 
+
+        <select
+
+          value={month}
+
+          onChange={(e) => setMonth(Number(e.target.value))}
+
+        >
+
+          <option value={1}>January</option>
+
+          <option value={2}>February</option>
+
+          <option value={3}>March</option>
+
+          <option value={4}>April</option>
+
+          <option value={5}>May</option>
+
+          <option value={6}>June</option>
+
+          <option value={7}>July</option>
+
+          <option value={8}>August</option>
+
+          <option value={9}>September</option>
+
+          <option value={10}>October</option>
+
+          <option value={11}>November</option>
+
+          <option value={12}>December</option>
+
+        </select>
+
+ 
+
+        <Input
+
+          type="number"
+
+          value={year}
+
+          onChange={(e) => setYear(Number(e.target.value))}
+
+        />
+
+      </Card>
+
+      ``
+
+      <Card>
+
+        <h3>Add Availability</h3>
+
+ 
+
+        <select onChange={(e) => setSelectedEmployee(e.target.value)}>
+
+          <option value="">Select Employee</option>
+
+          {employees.map((emp) => (
+
+            <option key={emp.name}>{emp.name}</option>
+
+          ))}
+
+        </select>
+
+ 
+
+        <Input type="date" onChange={(e) => setSelectedDate(e.target.value)} />
+
+ 
+
+        <select onChange={(e) => setSelectedShift(e.target.value)}>
+
+          <option value="">Select Shift</option>
+
+          {getShiftsForDate().map((shift, i) => (
+
+            <option key={i}>{shift}</option>
+
+          ))}
+
+        </select>
+
+ 
+
+        <Button onClick={addAvailability}>Add</Button>
+
+      </Card>
+
+      <Button onClick={generateSchedule}>Generate Schedule</Button>
+
+      {/* ✅ CALENDAR */}
+
+      <div
+
+        style={{
+
+          display: "grid",
+
+          gridTemplateColumns: "repeat(7, 1fr)",
+
+          gap: 8,
+
+          marginTop: 20,
+
+        }}
+
+      >
+
+        {daysOfWeek.map((d) => (
+
+          <div key={d}>
+
+            <b>{d}</b>
+
+          </div>
+
+        ))}
+
+ 
+
+        {calendar.map((cell, idx) => (
+
+          <div key={idx} style={{ border: "1px solid #ccc", minHeight: 100 }}>
+
+            {cell && (
+
+              <>
+
+                <div>
+
+                  <b>{cell.day}</b>
+
+                </div>
+
+                {cell.shifts.map((s, i) => (
+
+                  <div
+
+                    key={i}
+
+                    style={{
+
+                      background:
+
+                        s.employee === "Unassigned" ? "#f8d7da" : "#d4edda",
+
+                      marginTop: 4,
+
+                      padding: 2,
+
+                    }}
+
+                  >
+
+                    {s.shift.split(" ")[1]} → {s.employee}
+
+                  </div>
+
+                ))}
+
+              </>
+
+            )}
+
+          </div>
+
+        ))}
+
+      </div>
+
+    </div>
+
+  );
+
